@@ -212,13 +212,16 @@ class Zend_Http_Response_Stream extends Zend_Http_Response
             return '';
         }
 
+        $headers = $this->getHeaders();
         if(isset($headers['content-length'])) {
-            $this->body = stream_get_contents($this->stream, $headers['content-length']);
+            $this->body = stream_get_contents($this->stream, (int)$headers['content-length']);
         } else {
             $this->body = stream_get_contents($this->stream);
         }
         fclose($this->stream);
         $this->stream = null;
+
+        return $this->body;
     }
 
     public function __destruct()
