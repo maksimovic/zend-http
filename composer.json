@@ -1,15 +1,27 @@
 {
-    "name": "zf1s/zend-http",
+    "name": "maksimovic/zend-http",
     "description": "Zend Framework 1 Http package",
     "keywords": ["framework", "zf1", "zend", "http"],
     "homepage": "http://framework.zend.com/",
     "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {"type": "path", "url": "../zend-loader"},
+        {"type": "path", "url": "../zend-uri"},
+        {"type": "path", "url": "../zend-validate"},
+        {"type": "path", "url": "../zend-registry"}
+    ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=8.1",
         "ext-ctype": "*",
-        "zf1s/zend-exception": "^1.15.6",
-        "zf1s/zend-loader": "^1.15.6",
-        "zf1s/zend-uri": "^1.15.6"
+        "maksimovic/zend-exception": "^2.0.1",
+        "maksimovic/zend-loader": "^2.0 || dev-main",
+        "maksimovic/zend-uri": "^2.0 || dev-main"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-0": {
@@ -17,15 +29,21 @@
         }
     },
     "suggest": {
-        "ext-curl": "Used in special situations or with special adapters (Zend_Http_Client_Adapter_Curl)",
-        "ext-fileinfo": "Used in special situations or with special adapters (Zend_Http_Client)"
+        "ext-curl": "Used for Zend_Http_Client_Adapter_Curl",
+        "ext-fileinfo": "Used in Zend_Http_Client"
     },
     "replace": {
-        "zf1/zend-http": "^1.12"
+        "zf1/zend-http": "^1.12",
+        "zf1s/zend-http": "^1.12"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-text",
+        "phpstan": "phpstan analyse --memory-limit=256M"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.x-dev"
         }
     }
 }
