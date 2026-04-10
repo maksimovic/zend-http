@@ -1,7 +1,12 @@
 {
-    "name": "zf1s/zend-http",
+    "name": "maksimovic/zend-http",
     "description": "Zend Framework 1 Http package",
-    "keywords": ["framework", "zf1", "zend", "http"],
+    "keywords": [
+        "framework",
+        "zf1",
+        "zend",
+        "http"
+    ],
     "homepage": "http://framework.zend.com/",
     "license": "BSD-3-Clause",
     "require": {
