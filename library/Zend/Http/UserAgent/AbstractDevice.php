@@ -424,7 +424,7 @@ abstract class Zend_Http_UserAgent_AbstractDevice
      */
     public static function extractFromUserAgent($userAgent)
     {
-        $userAgent = trim($userAgent);
+        $userAgent = trim($userAgent ?? '');
 
         /**
          * @see http://www.texsoft.it/index.php?c=software&m=sw.php.useragent&l=it
