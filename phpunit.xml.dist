@@ -9,7 +9,7 @@
             <exclude>tests/_files</exclude>
             <exclude>tests/Client/_files</exclude>
             <exclude>tests/TestAsset</exclude>
-            <exclude>tests/UserAgent</exclude>
+            <exclude>tests/UserAgent/Features</exclude>
             <exclude>tests/Client/CommonHttpTests.php</exclude>
             <exclude>tests/Client/SocketTest.php</exclude>
             <exclude>tests/Client/SocketKeepaliveTest.php</exclude>

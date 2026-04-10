@@ -364,4 +364,150 @@ class Zend_Http_ResponseTest extends TestCase
         $this->assertArrayHasKey('imagetoolbar', $headers);
         $this->assertEmpty($headers['imagetoolbar']);
     }
+
+    // ---------------------------------------------------------------
+    // getHeadersAsString
+    // ---------------------------------------------------------------
+
+    public function testGetHeadersAsStringWithStatusLine(): void
+    {
+        $response = new Zend_Http_Response(200, [
+            'Content-Type' => 'text/html',
+            'X-Custom'     => 'foobar',
+        ]);
+
+        $str = $response->getHeadersAsString(true, "\n");
+        $this->assertStringContainsString('HTTP/1.1 200 OK', $str);
+        $this->assertStringContainsString('Content-type: text/html', $str);
+        $this->assertStringContainsString('X-custom: foobar', $str);
+    }
+
+    public function testGetHeadersAsStringWithoutStatusLine(): void
+    {
+        $response = new Zend_Http_Response(404, [
+            'Content-Type' => 'text/plain',
+        ]);
+
+        $str = $response->getHeadersAsString(false, "\n");
+        $this->assertStringNotContainsString('HTTP/', $str);
+        $this->assertStringContainsString('Content-type: text/plain', $str);
+    }
+
+    public function testGetHeadersAsStringWithMultiValueHeader(): void
+    {
+        $response = Zend_Http_Response::fromString($this->readResponse('response_with_cookies'));
+        $str = $response->getHeadersAsString(true, "\n");
+        $this->assertStringContainsString('HTTP/', $str);
+    }
+
+    // ---------------------------------------------------------------
+    // Constructor
+    // ---------------------------------------------------------------
+
+    public function testConstructorSetsMessageAutomatically(): void
+    {
+        $response = new Zend_Http_Response(200, []);
+        $this->assertEquals('OK', $response->getMessage());
+    }
+
+    public function testConstructorWithCustomMessage(): void
+    {
+        $response = new Zend_Http_Response(200, [], 'body', '1.1', 'All Good');
+        $this->assertEquals('All Good', $response->getMessage());
+    }
+
+    public function testConstructorAcceptsNonStandardCode(): void
+    {
+        $response = new Zend_Http_Response(599, []);
+        $this->assertEquals(599, $response->getStatus());
+        $this->assertEquals('Unknown', $response->getMessage());
+    }
+
+    public function testConstructorWithInvalidVersionThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Exception');
+        new Zend_Http_Response(200, [], null, 'abc');
+    }
+
+    public function testConstructorWithInvalidHeaderFormatThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Exception');
+        new Zend_Http_Response(200, ['no-colon-here']);
+    }
+
+    // ---------------------------------------------------------------
+    // decodeGzip / decodeDeflate static
+    // ---------------------------------------------------------------
+
+    public function testDecodeGzipOnValidData(): void
+    {
+        $original = 'Hello, World!';
+        $compressed = gzencode($original);
+        $decoded = Zend_Http_Response::decodeGzip($compressed);
+        $this->assertEquals($original, $decoded);
+    }
+
+    public function testDecodeDeflateOnValidData(): void
+    {
+        $original = 'Hello, World!';
+        $compressed = gzcompress($original);
+        $decoded = Zend_Http_Response::decodeDeflate($compressed);
+        $this->assertEquals($original, $decoded);
+    }
+
+    public function testDecodeDeflateOnRawDeflateData(): void
+    {
+        $original = 'Hello, World!';
+        $compressed = gzdeflate($original);
+        $decoded = Zend_Http_Response::decodeDeflate($compressed);
+        $this->assertEquals($original, $decoded);
+    }
+
+    // ---------------------------------------------------------------
+    // Multiple headers with same name
+    // ---------------------------------------------------------------
+
+    public function testExtractHeadersDuplicateKeysCreateArray(): void
+    {
+        $responseStr = "HTTP/1.1 200 OK\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\n\r\nbody";
+        $headers = Zend_Http_Response::extractHeaders($responseStr);
+        $this->assertIsArray($headers['set-cookie']);
+        $this->assertCount(2, $headers['set-cookie']);
+    }
+
+    // ---------------------------------------------------------------
+    // getHeader with array value
+    // ---------------------------------------------------------------
+
+    public function testGetHeaderReturnsArrayForDuplicateHeaders(): void
+    {
+        $response = Zend_Http_Response::fromString(
+            "HTTP/1.1 200 OK\r\nSet-Cookie: a=1\r\nSet-Cookie: b=2\r\n\r\nbody"
+        );
+        $result = $response->getHeader('Set-Cookie');
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result);
+    }
+
+    // ---------------------------------------------------------------
+    // isRedirect edge cases
+    // ---------------------------------------------------------------
+
+    public function testIsRedirectFor301(): void
+    {
+        $response = new Zend_Http_Response(301, []);
+        $this->assertTrue($response->isRedirect());
+    }
+
+    public function testIsRedirectFor303(): void
+    {
+        $response = new Zend_Http_Response(303, []);
+        $this->assertTrue($response->isRedirect());
+    }
+
+    public function testIsRedirectFor307(): void
+    {
+        $response = new Zend_Http_Response(307, []);
+        $this->assertTrue($response->isRedirect());
+    }
 }

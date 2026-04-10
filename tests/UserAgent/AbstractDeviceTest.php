@@ -44,9 +44,9 @@
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
+class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit\Framework\TestCase
 {
-    public function testUserAgentSafari()
+    public function testUserAgentSafari(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -119,7 +119,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('2.0', $extract['browser_version']);
     }
 
-    public function testUserAgentInternetExplorer()
+    public function testUserAgentInternetExplorer(): void
     {
         $userAgent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -185,7 +185,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Windows 98', $extract['device_os_name']);
     }
 
-    public function testUserAgentFirefox()
+    public function testUserAgentFirefox(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -224,7 +224,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Linux i686', $extract['device_os_token']);
     }
 
-    public function testUserAgentMozilla()
+    public function testUserAgentMozilla(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; it; rv:2.0b4) Gecko/20100818';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -262,7 +262,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('1.4', $extract['browser_version']);
     }
 
-    public function testUserAgentChrome()
+    public function testUserAgentChrome(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US) AppleWebKit/534.4 (KHTML, like Gecko) Chrome/6.0.481.0 Safari/534.4';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -286,7 +286,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Linux i686', $extract['device_os_token']);
     }
 
-    public function testUserAgentNetscape()
+    public function testUserAgentNetscape(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9pre) Gecko/20071102 Firefox/2.0.0.9 Navigator/9.0.0.3';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -322,7 +322,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Macintosh', $extract['compatibility_flag']);
     }
 
-    public function testUserAgentOpera()
+    public function testUserAgentOpera(): void
     {
         $userAgent = 'Opera/9.99 (Windows NT 5.1; U; pl) Presto/9.9.9';
         $extract = Zend_Http_UserAgent_Desktop::extractFromUserAgent($userAgent);
@@ -376,7 +376,7 @@ class Zend_Http_UserAgent_AbstractDeviceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('10.00', $extract['browser_version']);
     }
 
-    public function testMatchMobileOtherHeaders()
+    public function testMatchMobileOtherHeaders(): void
     {
 
         $userAgent = 'xxxxx';
@@ -426,7 +426,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * examples from http://en.wikipedia.org/wiki/List_of_user_agents_for_mobile_phones
      */
-    public function testMatchMobile()
+    public function testMatchMobile(): void
     {
         $userAgent = 'Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleW1ebKit/420.1 (KHTML, like Gecko) Version/3.0 Mobile/4A102 Safari/419.3';
         $this->assertTrue(Zend_Http_UserAgent_Mobile::match($userAgent, array(
@@ -9984,7 +9984,7 @@ audio/vnd.qcelp, application/xhtml+xml'
 
     }
 
-    public function testMatchBot()
+    public function testMatchBot(): void
     {
         $userAgent = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
         $this->assertTrue(Zend_Http_UserAgent_Bot::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10002,7 +10002,7 @@ audio/vnd.qcelp, application/xhtml+xml'
         $this->assertTrue(Zend_Http_UserAgent_Bot::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchChecker()
+    public function testMatchChecker(): void
     {
         $userAgent = 'Mozilla/5.0 (compatible; AbiLogicBot/1.0; +http://www.abilogic.com/bot.html)';
         $this->assertTrue(Zend_Http_UserAgent_Checker::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10011,7 +10011,7 @@ audio/vnd.qcelp, application/xhtml+xml'
         $this->assertTrue(Zend_Http_UserAgent_Checker::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchConsole()
+    public function testMatchConsole(): void
     {
         $userAgent = 'Mozilla/5.0 (PLAYSTATION 3; 1.10)';
         $this->assertTrue(Zend_Http_UserAgent_Console::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10020,19 +10020,19 @@ audio/vnd.qcelp, application/xhtml+xml'
         $this->assertTrue(Zend_Http_UserAgent_Console::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchEmail()
+    public function testMatchEmail(): void
     {
         $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.1.9) Gecko/20100317 Lightning/1.0b1 Thunderbird/3.0.4';
         $this->assertTrue(Zend_Http_UserAgent_Email::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchFeed()
+    public function testMatchFeed(): void
     {
         $userAgent = 'Bloglines/3.0-rho (http://www.bloglines.com; 3 subscribers)';
         $this->assertTrue(Zend_Http_UserAgent_Feed::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchOffline()
+    public function testMatchOffline(): void
     {
         $userAgent = 'Offline Explorer/2.5';
         $this->assertTrue(Zend_Http_UserAgent_Offline::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10054,7 +10054,7 @@ audio/vnd.qcelp, application/xhtml+xml'
         $this->markTestIncomplete();
     }
 
-    public function testMatchText()
+    public function testMatchText(): void
     {
         $userAgent = 'Lynx/2.8.6rel.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8k';
         $this->assertTrue(Zend_Http_UserAgent_Text::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10063,7 +10063,7 @@ audio/vnd.qcelp, application/xhtml+xml'
         $this->assertTrue(Zend_Http_UserAgent_Text::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
     }
 
-    public function testMatchValidator()
+    public function testMatchValidator(): void
     {
         $userAgent = 'CSE HTML Validator Lite Online (http://online.htmlvalidator.com/php/onlinevallite.php)';
         $this->assertTrue(Zend_Http_UserAgent_Validator::match($userAgent,array('HTTP_USER_AGENT'=>$userAgent)));
@@ -10072,7 +10072,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11557
      */
-    public function testMatchingIpadUserAgentShouldNotResultInNotices()
+    public function testMatchingIpadUserAgentShouldNotResultInNotices(): void
     {
         $userAgent = 'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; de-de) AppleWebKit/533.17.9 (KHTML, like Gecko)';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10082,7 +10082,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11557
      */
-    public function testMatchingMacSafariUserAgentShouldNotResultInNotices()
+    public function testMatchingMacSafariUserAgentShouldNotResultInNotices(): void
     {
         $userAgent = 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; de-de) AppleWebKit/533.18.1 (KHTML, like Gecko)';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10092,7 +10092,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11815
      */
-    public function testUserAgentAppleCoreMediaForIphoneShouldNotResultInNotices()
+    public function testUserAgentAppleCoreMediaForIphoneShouldNotResultInNotices(): void
     {
         $userAgent = 'AppleCoreMedia/1.0.0.8L1 (iPhone; U; CPU OS 4_3_5 like Mac OS X; de_de)';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10102,7 +10102,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11749
      */
-    public function testUserAgentAppleWebKit53446WithoutLanguageShouldNotResultInNotices()
+    public function testUserAgentAppleWebKit53446WithoutLanguageShouldNotResultInNotices(): void
     {
         $userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A5313e Safari/7534.48.3';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10112,7 +10112,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11693
      */
-    public function testShortMozillaUserAgentShouldNotResultInNotices()
+    public function testShortMozillaUserAgentShouldNotResultInNotices(): void
     {
         $userAgent = 'Mozilla/3.0 (compatible)';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10122,7 +10122,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group ZF-11857
      */
-    public function testOperaOnHtcHd2UserAgentShouldNotResultInNotices()
+    public function testOperaOnHtcHd2UserAgentShouldNotResultInNotices(): void
     {
         $userAgent = 'HTC_HD2_T8585 Opera/9.7 (Windows NT 5.1; U; de)';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);
@@ -10132,7 +10132,7 @@ audio/vnd.qcelp, application/xhtml+xml'
     /**
      * @group GH-550
      */
-    public function testOnlyBrowserNameShouldNotResultInNotices()
+    public function testOnlyBrowserNameShouldNotResultInNotices(): void
     {
         $userAgent    = 'Mozilla';
         $capabilities = Zend_Http_UserAgent_AbstractDevice::extractFromUserAgent($userAgent);

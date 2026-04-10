@@ -320,4 +320,208 @@ class Zend_Http_Header_SetCookieTest extends TestCase
         $cookie = new Zend_Http_Header_SetCookie();
         $cookie->{$setter}($value);
     }
+
+    // ---------------------------------------------------------------
+    // isExpired
+    // ---------------------------------------------------------------
+
+    public function testIsExpiredReturnsTrueForPastDate(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires(time() - 3600);
+        $this->assertTrue($cookie->isExpired());
+    }
+
+    public function testIsExpiredReturnsFalseForFutureDate(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires(time() + 3600);
+        $this->assertFalse($cookie->isExpired());
+    }
+
+    public function testIsExpiredReturnsFalseForSessionCookie(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $this->assertFalse($cookie->isExpired());
+    }
+
+    public function testIsExpiredWithCustomNow(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires(1000);
+        $this->assertTrue($cookie->isExpired(2000));
+        $this->assertFalse($cookie->isExpired(500));
+    }
+
+    // ---------------------------------------------------------------
+    // isSessionCookie
+    // ---------------------------------------------------------------
+
+    public function testIsSessionCookieReturnsTrueWithNoExpiry(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $this->assertTrue($cookie->isSessionCookie());
+    }
+
+    public function testIsSessionCookieReturnsFalseWithExpiry(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires(time() + 3600);
+        $this->assertFalse($cookie->isSessionCookie());
+    }
+
+    // ---------------------------------------------------------------
+    // isValidForRequest
+    // ---------------------------------------------------------------
+
+    public function testIsValidForRequestMatchesDomainAndPath(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setPath('/foo');
+        $this->assertTrue($cookie->isValidForRequest('other.com', '/foo/bar'));
+    }
+
+    public function testIsValidForRequestRejectsWrongPath(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setPath('/foo');
+        $this->assertFalse($cookie->isValidForRequest('example.com', '/bar'));
+    }
+
+    public function testIsValidForRequestRejectsInsecureWhenSecureRequired(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setSecure(true);
+        $this->assertFalse($cookie->isValidForRequest('example.com', '/', false));
+    }
+
+    // ---------------------------------------------------------------
+    // setVersion / getVersion
+    // ---------------------------------------------------------------
+
+    public function testSetAndGetVersion(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setVersion(1);
+        $this->assertEquals(1, $cookie->getVersion());
+    }
+
+    public function testSetVersionInvalidThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_InvalidArgumentException');
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setVersion('not-int');
+    }
+
+    // ---------------------------------------------------------------
+    // setMaxAge / getMaxAge
+    // ---------------------------------------------------------------
+
+    public function testSetAndGetMaxAge(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setMaxAge(3600);
+        $this->assertEquals(3600, $cookie->getMaxAge());
+    }
+
+    public function testSetMaxAgeInvalidThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_InvalidArgumentException');
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setMaxAge(-1);
+    }
+
+    public function testSetMaxAgeNonIntThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_InvalidArgumentException');
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setMaxAge('string');
+    }
+
+    // ---------------------------------------------------------------
+    // getExpires with inSeconds
+    // ---------------------------------------------------------------
+
+    public function testGetExpiresInSeconds(): void
+    {
+        $ts = time() + 7200;
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires($ts);
+        $this->assertEquals($ts, $cookie->getExpires(true));
+    }
+
+    public function testGetExpiresReturnsNullWhenNotSet(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $this->assertNull($cookie->getExpires());
+        $this->assertNull($cookie->getExpires(true));
+    }
+
+    // ---------------------------------------------------------------
+    // setExpires with invalid type
+    // ---------------------------------------------------------------
+
+    public function testSetExpiresWithInvalidTypeThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_InvalidArgumentException');
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setExpires(new stdClass());
+    }
+
+    // ---------------------------------------------------------------
+    // getFieldValue with empty name
+    // ---------------------------------------------------------------
+
+    public function testGetFieldValueWithNoNameThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_RuntimeException');
+        $cookie = new Zend_Http_Header_SetCookie();
+        $cookie->getFieldValue();
+    }
+
+    // ---------------------------------------------------------------
+    // getFieldValue with version and max-age
+    // ---------------------------------------------------------------
+
+    public function testGetFieldValueIncludesVersionAndMaxAge(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->setVersion(1);
+        $cookie->setMaxAge(1800);
+        $fv = $cookie->getFieldValue();
+        $this->assertStringContainsString('Version=1', $fv);
+        $this->assertStringContainsString('Max-Age=1800', $fv);
+    }
+
+    // ---------------------------------------------------------------
+    // Value with quotes
+    // ---------------------------------------------------------------
+
+    public function testGetFieldValueEncodesQuotedValues(): void
+    {
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val"ue');
+        $fv = $cookie->getFieldValue();
+        $this->assertStringContainsString('"', $fv);
+    }
+
+    // ---------------------------------------------------------------
+    // fromString bypass
+    // ---------------------------------------------------------------
+
+    public function testFromStringWithInvalidHeaderNameThrowsException(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_InvalidArgumentException');
+        Zend_Http_Header_SetCookie::fromString('Not-Set-Cookie: myname=myvalue');
+    }
+
+    // ---------------------------------------------------------------
+    // toStringMultipleHeaders with invalid header type
+    // ---------------------------------------------------------------
+
+    public function testToStringMultipleHeadersThrowsOnNonSetCookie(): void
+    {
+        $this->expectException('Zend_Http_Header_Exception_RuntimeException');
+        $cookie = new Zend_Http_Header_SetCookie('test', 'val');
+        $cookie->toStringMultipleHeaders([new stdClass()]);
+    }
 }
